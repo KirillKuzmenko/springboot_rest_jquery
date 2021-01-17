@@ -29,11 +29,6 @@
     <div class="row min-vh-100 no-gutters">
         <!--Left panel-->
         <div class="col-md-2 p-0 pt-3 bg-white">
-            <!--<ul class="nav nav-pills flex-column">
-                <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item"><a id="admin" href="#adminPanel"
-                                                                              class="nav-link active">Admin</a></li>
-                <li sec:authorize="hasRole('ROLE_USER')" class="nav-item"><a id="user" href="#userInfo" class="nav-link">User</a></li>
-            </ul>-->
             <div class="list-group list-group-flush mt-3" id="list-tab" role="tablist">
                 <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item list-group-item-action active" id="admin"
                    data-toggle="list" href="#adminPanel" role="tab" aria-controls="home">Admin</a>
@@ -116,7 +111,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="editPassword">Password</label>
-                                            <input type="password" class="form-control" placeholder="Enter password" id="editPassword" name="password" required>
+                                            <input type="password" class="form-control" placeholder="Enter password" id="editPassword" name="password">
                                         </div>
                                         <div class="form-group">
                                             <label for="editUserRoles">Role</label>

@@ -1,6 +1,7 @@
 let allUsers;
 const tBody = $('#bodyTable');
 
+/*Срабатывает при открытии админки*/
 $(document).ready(function () {
     $.getJSON('/admin/users', function (text) {
         allUsers = text;
@@ -11,6 +12,7 @@ $(document).ready(function () {
     addUserBodyTable();
 });
 
+/*форма добавления пользователя*/
 $('#add_form').on('submit', function (e) {
     e.preventDefault();
     let usersJson = JSON.stringify(getFormData($('#add_form')));
@@ -20,6 +22,8 @@ $('#add_form').on('submit', function (e) {
         data: usersJson,
         contentType: 'application/json;charset=UTF-8',
         success: function (msg) {
+
+            $('#add_form')[0].reset();
             allUsers.push(msg);
             createLineInTable(msg).appendTo(tBody);
         },
@@ -42,6 +46,7 @@ $('#deleteModal').on('show.bs.modal', function (event) {
     fillModal('delete', user);
 });
 
+/*форма редактирования юзера*/
 $('#editUser').on('submit', function (e) {
     e.preventDefault();
     let userJson = JSON.stringify(getFormData($('#editUser')));
@@ -52,6 +57,7 @@ $('#editUser').on('submit', function (e) {
         data: userJson,
         contentType: 'application/json;charset=UTF-8',
         success: function (msg) {
+             $('#editUser')[0].reset();
             allUsers.splice(allUsers.findIndex(item => item.id === msg.id), 1, msg);
             $('#tr' + msg.id).remove();
             createLineInTable(msg).appendTo(tBody);
@@ -60,6 +66,7 @@ $('#editUser').on('submit', function (e) {
     $('#editModal').modal('hide');
 });
 
+/*форма удаления юзера*/
 $('#deleteUser').on('submit', function (e) {
     e.preventDefault();
     $.ajax({
@@ -67,6 +74,7 @@ $('#deleteUser').on('submit', function (e) {
         method: 'DELETE',
         dataType: 'text',
         success: function (msg) {
+            $('#deleteUser')[0].reset();
             allUsers.splice(allUsers.findIndex(item => item.id === parseInt(msg)), 1);
             $('#tr' + msg).remove();
         }
@@ -74,18 +82,19 @@ $('#deleteUser').on('submit', function (e) {
     $('#deleteModal').modal('hide');
 });
 
+/*заполнение модального окна*/
 function fillModal(action, user) {
     $('#' + action + 'Id').attr('value', user.id);
     $('#' + action + 'FirstName').attr('value', user.firstname);
     $('#' + action + 'LastName').attr('value', user.lastname);
     $('#' + action + 'Age').attr('value', user.age);
     $('#' + action + 'Username').attr('value', user.username);
-    $('#' + action + 'Password').attr('value', user.password);
     $.each(user.roles, function (key, value) {
         $('#' + action + 'Role' + value.role.replaceAll('ROLE_', '')).attr('selected', true);
     });
 }
 
+/*получение юзера из allUsers*/
 function getUser (id) {
     return allUsers.find(function (el) {
         if (el.id === id) {
@@ -94,6 +103,7 @@ function getUser (id) {
     });
 }
 
+/*сериализация формы в строку*/
 function getFormData(form) {
     let fd = $(form).serializeArray();
 
@@ -112,6 +122,7 @@ function getFormData(form) {
     return d;
 }
 
+/*функция создания таблицы*/
 function createLineInTable(el) {
     let row = $('<tr></tr>');
     row.attr('id', 'tr' + el.id);
@@ -126,12 +137,14 @@ function createLineInTable(el) {
     return row;
 }
 
+/*создание ячейки таблицы*/
 let getTd = function (text, valueOfName) {
     let td = $('<td></td>');
     td.attr('id', valueOfName);
     return td.text(text);
 }
 
+/*получение и вставка ролей в таблицу*/
 let getRoles = function (el) {
     let td = $('<td></td>');
     let span = $('<span></span>');
@@ -142,6 +155,7 @@ let getRoles = function (el) {
     return td;
 }
 
+/*добавление в таблицу кнопки edit or delete*/
 let getButton = function (text, classType, id, target) {
     let btn = $('<button></button>');
     let td = $('<td></td>');
@@ -154,6 +168,7 @@ let getButton = function (text, classType, id, target) {
     return td;
 }
 
+/*эта и следующая переключение в левой колонке*/
 $('#admin').on('click', function () {
     $('#userInfo').attr('hidden', true);
     $('#adminPanel').attr('hidden', false);
@@ -168,12 +183,12 @@ $('#user').on('click', function () {
     $('#userInfo').attr('hidden', false);
 });
 
+/*создание таблицы в админке*/
 function addUserBodyTable() {
     let userBodyTable = $('#userBody');
     let row = $('<tr></tr>');
     let td = $('<td></td>');
     $.getJSON('/admin/user', function (text) {
-        console.log(text);
         td.clone().text(text.id).appendTo(row);
         td.clone().text(text.firstname).appendTo(row);
         td.clone().text(text.lastname).appendTo(row);
